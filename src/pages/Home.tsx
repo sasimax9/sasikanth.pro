@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import portrait from "@/assets/sasikanth.jpg";
 import {
   Mail, Phone, Linkedin, ArrowRight, Code2, Cpu, Database,
@@ -6,18 +7,6 @@ import {
   Boxes, ShieldCheck, Zap, Download, FileText,
 } from "lucide-react";
 import { projects } from "@/lib/projects";
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Sasikanth Kankatala — Tech Lead & Architect" },
-      { name: "description", content: "Tech Lead & Architect specializing in full-stack engineering, MES platforms, and AI systems with Ollama and local LLMs." },
-      { property: "og:title", content: "Sasikanth Kankatala — Tech Lead & Architect" },
-      { property: "og:description", content: "Full-stack architect building scalable platforms and self-hosted AI with Ollama." },
-    ],
-  }),
-  component: Portfolio,
-});
 
 const stackGroups = [
   { icon: Code2, title: "Frontend", items: ["Angular 12/14/16", "React / Next.js", "TypeScript", "PrimeNG", "Material UI", "DevExpress", "Kendo UI"] },
@@ -47,7 +36,6 @@ const experience = [
     desc: "Built UIs across multiple startup-stage products with the latest JS frameworks and reusable component libraries.",
     tags: ["Java", "Spring Boot", "jQuery", "JavaScript"] },
 ];
-
 
 function Nav() {
   const links = [["About", "#about"], ["Stack", "#stack"], ["Experience", "#experience"], ["Projects", "#projects"], ["Contact", "#contact"]] as const;
@@ -239,8 +227,7 @@ function Projects() {
         {projects.map((p) => (
           <Link
             key={p.slug}
-            to="/projects/$slug"
-            params={{ slug: p.slug }}
+            to={`/projects/${p.slug}`}
             className="group p-6 rounded-2xl bg-card border border-border hover:border-primary/40 transition shadow-card relative overflow-hidden block"
           >
             <div className="absolute -top-20 -right-20 size-40 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition" />
@@ -332,16 +319,22 @@ function Footer() {
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-4 items-center justify-between text-sm text-muted-foreground">
         <div className="font-mono">© {new Date().getFullYear()} Sasikanth Kankatala</div>
         <div className="flex items-center gap-2 font-mono text-xs">
-          <Terminal className="size-3.5" /> Sasikanth.kankatala.pro
+          <Terminal className="size-3.5" /> built with intent · powered by curiosity
         </div>
       </div>
     </footer>
   );
 }
 
-function Portfolio() {
+export default function Home() {
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>Sasikanth Kankatala — Tech Lead & Architect</title>
+        <meta name="description" content="Tech Lead & Architect specializing in full-stack engineering, MES platforms, and AI systems with Ollama and local LLMs." />
+        <meta property="og:title" content="Sasikanth Kankatala — Tech Lead & Architect" />
+        <meta property="og:description" content="Full-stack architect building scalable platforms and self-hosted AI with Ollama." />
+      </Helmet>
       <Nav />
       <main>
         <Hero />

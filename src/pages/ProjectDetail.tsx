@@ -1,57 +1,33 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { Link, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { ArrowLeft, ArrowRight, CheckCircle2, Boxes, Layers, Sparkles } from "lucide-react";
 import { getProject, projects, type Project } from "@/lib/projects";
+import NotFound from "./NotFound";
 
-export const Route = createFileRoute("/projects/$slug")({
-  loader: ({ params }) => {
-    const project = getProject(params.slug);
-    if (!project) throw notFound();
-    return { project };
-  },
-  head: ({ loaderData }) => {
-    const p = loaderData?.project;
-    const title = p ? `${p.name} — Case Study · Sasikanth Kankatala` : "Case Study";
-    const desc = p?.tagline ?? "Project case study.";
-    return {
-      meta: [
-        { title },
-        { name: "description", content: desc },
-        { property: "og:title", content: title },
-        { property: "og:description", content: desc },
-      ],
-    };
-  },
-  notFoundComponent: () => (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center">
-      <h1 className="text-4xl font-bold">Project not found</h1>
-      <p className="text-muted-foreground">That case study doesn't exist.</p>
-      <Link to="/" className="text-primary font-mono text-sm hover:underline">← Back home</Link>
-    </div>
-  ),
-  errorComponent: ({ error }) => (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center">
-      <h1 className="text-3xl font-bold">Something broke</h1>
-      <p className="text-muted-foreground">{error.message}</p>
-      <Link to="/" className="text-primary font-mono text-sm hover:underline">← Back home</Link>
-    </div>
-  ),
-  component: ProjectDetail,
-});
+export default function ProjectDetail() {
+  const { slug } = useParams<{ slug: string }>();
+  const project = slug ? getProject(slug) : undefined;
+  if (!project) return <NotFound />;
 
-function ProjectDetail() {
-  const { project } = Route.useLoaderData() as { project: Project };
   const idx = projects.findIndex((p) => p.slug === project.slug);
   const next = projects[(idx + 1) % projects.length];
+  const title = `${project.name} — Case Study · Sasikanth Kankatala`;
 
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={project.tagline} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={project.tagline} />
+      </Helmet>
       <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-background/60 border-b border-border/50">
         <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="font-mono text-sm font-semibold flex items-center gap-2">
             <span className="size-2 rounded-full bg-primary animate-glow" />
             <span className="text-gradient">sasikanth.pro</span>
           </Link>
-          <Link to="/" hash="projects" className="text-sm text-muted-foreground hover:text-foreground transition inline-flex items-center gap-2">
+          <Link to="/#projects" className="text-sm text-muted-foreground hover:text-foreground transition inline-flex items-center gap-2">
             <ArrowLeft className="size-4" /> All projects
           </Link>
         </nav>
@@ -59,7 +35,6 @@ function ProjectDetail() {
 
       <main className="pt-28 pb-24 px-6">
         <div className="max-w-5xl mx-auto">
-          {/* Hero */}
           <div className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-card p-8 md:p-12">
             <div className="absolute inset-0 grid-bg opacity-40" />
             <div className="absolute -top-32 -right-32 size-80 bg-primary/15 rounded-full blur-3xl" />
@@ -83,7 +58,6 @@ function ProjectDetail() {
             </div>
           </div>
 
-          {/* Outcomes */}
           <section className="mt-12">
             <div className="font-mono text-xs text-primary mb-3">// outcomes</div>
             <div className="grid grid-cols-3 gap-4">
@@ -96,7 +70,6 @@ function ProjectDetail() {
             </div>
           </section>
 
-          {/* Context */}
           <section className="mt-12 grid md:grid-cols-[2fr_1fr] gap-8">
             <div>
               <div className="font-mono text-xs text-primary mb-3">// context</div>
@@ -116,7 +89,6 @@ function ProjectDetail() {
             </div>
           </section>
 
-          {/* Screenshots (mocked tiles) */}
           <section className="mt-16">
             <div className="font-mono text-xs text-primary mb-3">// screens</div>
             <h2 className="text-2xl md:text-3xl font-bold mb-6">A look inside</h2>
@@ -159,7 +131,6 @@ function ProjectDetail() {
             <p className="text-xs text-muted-foreground mt-3 font-mono">// stylized previews — actual screens under NDA</p>
           </section>
 
-          {/* Architecture */}
           <section className="mt-16">
             <div className="font-mono text-xs text-primary mb-3">// architecture</div>
             <h2 className="text-2xl md:text-3xl font-bold mb-3 flex items-center gap-3">
@@ -197,7 +168,6 @@ function ProjectDetail() {
             </div>
           </section>
 
-          {/* Next */}
           <section className="mt-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 md:p-8 rounded-2xl border border-border bg-card shadow-card">
             <div>
               <div className="font-mono text-xs text-primary mb-1">// up next</div>
@@ -205,8 +175,7 @@ function ProjectDetail() {
               <div className="text-sm text-muted-foreground">{next.domain} · {next.tagline}</div>
             </div>
             <Link
-              to="/projects/$slug"
-              params={{ slug: next.slug }}
+              to={`/projects/${next.slug}`}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-gradient-primary text-primary-foreground font-medium shadow-glow hover:opacity-90 transition"
             >
               Read case study <ArrowRight className="size-4" />
@@ -214,7 +183,7 @@ function ProjectDetail() {
           </section>
 
           <div className="mt-10">
-            <Link to="/" hash="projects" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition">
+            <Link to="/#projects" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition">
               <ArrowLeft className="size-4" /> Back to all projects
             </Link>
           </div>
@@ -232,3 +201,5 @@ function ProjectDetail() {
     </div>
   );
 }
+
+export type { Project };

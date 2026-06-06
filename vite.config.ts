@@ -1,15 +1,19 @@
-import path from "path";
-import { fileURLToPath } from "url";
-import { defineConfig } from "@lovable.dev/vite-tanstack-config";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
+import path from "node:path";
 
 export default defineConfig({
-  vite: {
-    resolve: {
-      alias: {
-        server: path.resolve(__dirname, "src/server.ts"),
-      },
+  plugins: [react(), tailwindcss(), tsconfigPaths()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
+  },
+  server: {
+    host: "::",
+    port: 8080,
+    strictPort: true,
   },
 });
