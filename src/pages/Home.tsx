@@ -319,7 +319,7 @@ function Footer() {
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-4 items-center justify-between text-sm text-muted-foreground">
         <div className="font-mono">© {new Date().getFullYear()} Sasikanth Kankatala</div>
         <div className="flex items-center gap-2 font-mono text-xs">
-          <Terminal className="size-3.5" /> built with intent · powered by curiosity
+          <Terminal className="size-3.5" /> Sasikanth.kankatala.professional
         </div>
       </div>
     </footer>
