@@ -6,8 +6,9 @@ function createFetchRequest(req: any) {
   const host = req.headers?.host ?? "localhost";
   const url = req.url?.startsWith("http") ? req.url : `https://${host}${req.url}`;
   const headers = new Headers();
+  const headerEntries = Object.entries(req.headers || {}) as [string, string | string[]][];
 
-  for (const [key, value] of Object.entries(req.headers || {})) {
+  for (const [key, value] of headerEntries) {
     if (Array.isArray(value)) {
       value.forEach((v) => headers.append(key, v));
     } else if (value !== undefined && value !== null) {
